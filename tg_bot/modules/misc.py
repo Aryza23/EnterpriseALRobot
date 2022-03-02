@@ -65,10 +65,7 @@ def get_id(update: Update, context: CallbackContext):
     message = update.effective_message
     chat = update.effective_chat
     msg = update.effective_message
-    user_id = extract_user(msg, args)
-
-    if user_id:
-
+    if user_id := extract_user(msg, args):
         if msg.reply_to_message and msg.reply_to_message.forward_from:
 
             user1 = message.reply_to_message.from_user
@@ -89,17 +86,15 @@ def get_id(update: Update, context: CallbackContext):
                 parse_mode=ParseMode.HTML,
             )
 
+    elif chat.type == "private":
+        msg.reply_text(
+            f"Your id is <code>{chat.id}</code>.", parse_mode=ParseMode.HTML
+        )
+
     else:
-
-        if chat.type == "private":
-            msg.reply_text(
-                f"Your id is <code>{chat.id}</code>.", parse_mode=ParseMode.HTML
-            )
-
-        else:
-            msg.reply_text(
-                f"This group's id is <code>{chat.id}</code>.", parse_mode=ParseMode.HTML
-            )
+        msg.reply_text(
+            f"This group's id is <code>{chat.id}</code>.", parse_mode=ParseMode.HTML
+        )
 
 @kigcmd(command='gifid')
 def gifid(update: Update, _):
@@ -118,9 +113,7 @@ def info(update: Update, context: CallbackContext):  # sourcery no-metrics
     args = context.args
     message = update.effective_message
     chat = update.effective_chat
-    user_id = extract_user(update.effective_message, args)
-
-    if user_id:
+    if user_id := extract_user(update.effective_message, args):
         user = bot.get_chat(user_id)
 
     elif not message.reply_to_message and not args:
@@ -156,8 +149,7 @@ def info(update: Update, context: CallbackContext):  # sourcery no-metrics
     text += f"\nPermanent user link: {mention_html(user.id, 'link')}"
 
     try:
-        spamwtc = sw.get_ban(int(user.id))
-        if spamwtc:
+        if spamwtc := sw.get_ban(int(user.id)):
             text += "<b>\n\nSpamWatch:\n</b>"
             text += "<b>This person is banned in Spamwatch!</b>"
             text += f"\nReason: <pre>{spamwtc.reason}</pre>"
@@ -290,7 +282,7 @@ def get_readable_time(seconds: int) -> str:
     for x in range(len(time_list)):
         time_list[x] = str(time_list[x]) + time_suffix_list[x]
     if len(time_list) == 4:
-        ping_time += time_list.pop() + ", "
+        ping_time += f'{time_list.pop()}, '
 
     time_list.reverse()
     ping_time += ":".join(time_list)
@@ -306,23 +298,23 @@ def stats(update, context):
     uptime = datetime.datetime.fromtimestamp(boot_time()).strftime("%Y-%m-%d %H:%M:%S")
     botuptime = get_readable_time((time.time() - StartTime))
     status = "*╒═══「 System statistics: 」*\n\n"
-    status += "*• System Start time:* " + str(uptime) + "\n"
+    status += f"*• System Start time:* {str(uptime)}" + "\n"
     uname = platform.uname()
-    status += "*• System:* " + str(uname.system) + "\n"
-    status += "*• Node name:* " + escape_markdown(str(uname.node)) + "\n"
-    status += "*• Release:* " + escape_markdown(str(uname.release)) + "\n"
-    status += "*• Machine:* " + escape_markdown(str(uname.machine)) + "\n"
+    status += f"*• System:* {str(uname.system)}" + "\n"
+    status += f"*• Node name:* {escape_markdown(str(uname.node))}" + "\n"
+    status += f"*• Release:* {escape_markdown(str(uname.release))}" + "\n"
+    status += f"*• Machine:* {escape_markdown(str(uname.machine))}" + "\n"
 
     mem = virtual_memory()
     cpu = cpu_percent()
     disk = disk_usage("/")
-    status += "*• CPU:* " + str(cpu) + " %\n"
-    status += "*• RAM:* " + str(mem[2]) + " %\n"
-    status += "*• Storage:* " + str(disk[3]) + " %\n\n"
-    status += "*• Python version:* " + python_version() + "\n"
-    status += "*• python-telegram-bot:* " + str(ptbver) + "\n"
-    status += "*• Uptime:* " + str(botuptime) + "\n"
-    status += "*• Database size:* " + str(db_size) + "\n"
+    status += f"*• CPU:* {str(cpu)}" + " %\n"
+    status += f"*• RAM:* {str(mem[2])}" + " %\n"
+    status += f"*• Storage:* {str(disk[3])}" + " %\n\n"
+    status += f"*• Python version:* {python_version()}" + "\n"
+    status += f"*• python-telegram-bot:* {str(ptbver)}" + "\n"
+    status += f"*• Uptime:* {str(botuptime)}" + "\n"
+    status += f"*• Database size:* {str(db_size)}" + "\n"
     kb = [
           [
            InlineKeyboardButton('Ping', callback_data='pingCB')
@@ -330,7 +322,7 @@ def stats(update, context):
     ]
     repo = git.Repo(search_parent_directories=True)
     sha = repo.head.object.hexsha
-    status += f"*• Commit*: `{sha[0:9]}`\n"
+    status += f"*• Commit*: `{sha[:9]}`\n"
     try:
         update.effective_message.reply_text(status +
             "\n*Bot statistics*:\n"

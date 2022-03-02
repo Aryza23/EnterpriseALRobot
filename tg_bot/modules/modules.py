@@ -28,7 +28,7 @@ def load(update: Update, context: CallbackContext):
     )
 
     try:
-        imported_module = importlib.import_module("tg_bot.modules." + text)
+        imported_module = importlib.import_module(f"tg_bot.modules.{text}")
     except:
         load_messasge.edit_text("Does that module even exist?")
         return
@@ -93,7 +93,7 @@ def unload(update: Update, context: CallbackContext):
     )
 
     try:
-        imported_module = importlib.import_module("tg_bot.modules." + text)
+        imported_module = importlib.import_module(f"tg_bot.modules.{text}")
     except:
         unload_messasge.edit_text("Does that module even exist?")
         return

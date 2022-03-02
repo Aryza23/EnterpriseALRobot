@@ -41,38 +41,6 @@ def inlinequery(update: Update, _) -> None:
     user = update.effective_user
 
     results: List = []
-    inline_help_dicts = [
-        {
-            "title": "SpamProtection INFO",
-            "description": "Look up a person/bot/channel/chat on @Intellivoid SpamProtection API",
-            "message_text": "Click the button below to look up a person/bot/channel/chat on @Intellivoid SpamProtection API using "
-                            "username or telegram id",
-            "thumb_urL": "https://telegra.ph/file/3ce9045b1c7faf7123c67.jpg",
-            "keyboard": ".spb ",
-        },
-        {
-            "title": "Account info on Kigyo",
-            "description": "Look up a Telegram account in Kigyo database",
-            "message_text": "Click the button below to look up a person in Kigyo database using their Telegram ID",
-            "thumb_urL": "https://telegra.ph/file/c85e07b58f5b3158b529a.jpg",
-            "keyboard": ".info ",
-        },
-        {
-            "title": "About",
-            "description": "Know about Kigyo",
-            "message_text": "Click the button below to get to know about Kigyo.",
-            "thumb_urL": "https://telegra.ph/file/c85e07b58f5b3158b529a.jpg",
-            "keyboard": ".about ",
-        },
-        {
-            "title": "Anilist",
-            "description": "Search anime and manga on AniList.co",
-            "message_text": "Click the button below to search anime and manga on AniList.co",
-            "thumb_urL": "https://telegra.ph/file/c85e07b58f5b3158b529a.jpg",
-            "keyboard": ".anilist ",
-        },
-    ]
-
     inline_funcs = {
         ".spb": spb,
         ".info": inlineinfo,
@@ -83,6 +51,38 @@ def inlinequery(update: Update, _) -> None:
     if (f := query.split(" ", 1)[0]) in inline_funcs:
         inline_funcs[f](remove_prefix(query, f).strip(), update, user)
     else:
+        inline_help_dicts = [
+            {
+                "title": "SpamProtection INFO",
+                "description": "Look up a person/bot/channel/chat on @Intellivoid SpamProtection API",
+                "message_text": "Click the button below to look up a person/bot/channel/chat on @Intellivoid SpamProtection API using "
+                                "username or telegram id",
+                "thumb_urL": "https://telegra.ph/file/3ce9045b1c7faf7123c67.jpg",
+                "keyboard": ".spb ",
+            },
+            {
+                "title": "Account info on Kigyo",
+                "description": "Look up a Telegram account in Kigyo database",
+                "message_text": "Click the button below to look up a person in Kigyo database using their Telegram ID",
+                "thumb_urL": "https://telegra.ph/file/c85e07b58f5b3158b529a.jpg",
+                "keyboard": ".info ",
+            },
+            {
+                "title": "About",
+                "description": "Know about Kigyo",
+                "message_text": "Click the button below to get to know about Kigyo.",
+                "thumb_urL": "https://telegra.ph/file/c85e07b58f5b3158b529a.jpg",
+                "keyboard": ".about ",
+            },
+            {
+                "title": "Anilist",
+                "description": "Search anime and manga on AniList.co",
+                "message_text": "Click the button below to search anime and manga on AniList.co",
+                "thumb_urL": "https://telegra.ph/file/c85e07b58f5b3158b529a.jpg",
+                "keyboard": ".anilist ",
+            },
+        ]
+
         for ihelp in inline_help_dicts:
             results.append(
                 article(
@@ -145,30 +145,29 @@ def inlineinfo(query: str, update: Update, context: CallbackContext) -> None:
     nation_level_present = False
 
     if user.id == OWNER_ID:
-        text += f"\n\nThis person is my owner"
+        text += "\\n\\nThis person is my owner"
         nation_level_present = True
     elif user.id in DEV_USERS:
-        text += f"\n\nThis Person is a part of Eagle Union"
+        text += "\\n\\nThis Person is a part of Eagle Union"
         nation_level_present = True
     elif user.id in SUDO_USERS:
-        text += f"\n\nThe Nation level of this person is Royal"
+        text += "\\n\\nThe Nation level of this person is Royal"
         nation_level_present = True
     elif user.id in SUPPORT_USERS:
-        text += f"\n\nThe Nation level of this person is Sakura"
+        text += "\\n\\nThe Nation level of this person is Sakura"
         nation_level_present = True
     elif user.id in SARDEGNA_USERS:
-        text += f"\n\nThe Nation level of this person is Sardegna"
+        text += "\\n\\nThe Nation level of this person is Sardegna"
         nation_level_present = True
     elif user.id in WHITELIST_USERS:
-        text += f"\n\nThe Nation level of this person is Neptunia"
+        text += "\\n\\nThe Nation level of this person is Neptunia"
         nation_level_present = True
 
     if nation_level_present:
         text += ' [<a href="https://t.me/{}?start=nations">?</a>]'.format(bot.username)
 
     try:
-        spamwtc = sw.get_ban(int(user.id))
-        if spamwtc:
+        if spamwtc := sw.get_ban(int(user.id)):
             text += "<b>\n\n• SpamWatched:\n</b> Yes"
             text += f"\n• Reason: <pre>{spamwtc.reason}</pre>"
             text += "\n• Appeal at @SpamWatchSupport"
@@ -187,17 +186,16 @@ def inlineinfo(query: str, update: Update, context: CallbackContext) -> None:
         [
             [
                 InlineKeyboardButton(
-                    text="Report Error",
-                    url=f"https://t.me/YorktownEagleUnion",
+                    text="Report Error", url="https://t.me/YorktownEagleUnion"
                 ),
                 InlineKeyboardButton(
                     text="Search again",
                     switch_inline_query_current_chat=".info ",
                 ),
-
-            ],
+            ]
         ]
-        )
+    )
+
 
     results = [
         InlineQueryResultArticle(
@@ -229,30 +227,26 @@ def about(query: str, update: Update, context: CallbackContext) -> None:
         [
             [
                 InlineKeyboardButton(
-                    text="Support",
-                    url=f"https://t.me/YorktownEagleUnion",
+                    text="Support", url="https://t.me/YorktownEagleUnion"
                 ),
                 InlineKeyboardButton(
-                    text="Channel",
-                    url=f"https://t.me/KigyoUpdates",
+                    text="Channel", url="https://t.me/KigyoUpdates"
                 ),
-                InlineKeyboardButton(
-                    text='Ping',
-                    callback_data='pingCB'
-                ),
-
+                InlineKeyboardButton(text='Ping', callback_data='pingCB'),
             ],
             [
                 InlineKeyboardButton(
                     text="GitLab",
-                    url=f"https://www.gitlab.com/Dank-del/EnterpriseALRobot",
+                    url="https://www.gitlab.com/Dank-del/EnterpriseALRobot",
                 ),
                 InlineKeyboardButton(
                     text="GitHub",
                     url="https://www.github.com/Dank-del/EnterpriseALRobot",
                 ),
             ],
-        ])
+        ]
+    )
+
 
     results.append(
 
@@ -290,24 +284,24 @@ def spb(query: str, update: Update, context: CallbackContext) -> None:
         response = a["success"]
         if response is True:
             date = a["results"]["last_updated"]
-            stats = f"*◢ Intellivoid• SpamProtection Info*:\n"
+            stats = "*◢ Intellivoid• SpamProtection Info*:\\n"
             stats += f' • *Updated on*: `{datetime.fromtimestamp(date).strftime("%Y-%m-%d %I:%M:%S %p")}`\n'
 
             if a["results"]["attributes"]["is_potential_spammer"] is True:
-                stats += f" • *User*: `USERxSPAM`\n"
+                stats += " • *User*: `USERxSPAM`\\n"
             elif a["results"]["attributes"]["is_operator"] is True:
-                stats += f" • *User*: `USERxOPERATOR`\n"
+                stats += " • *User*: `USERxOPERATOR`\\n"
             elif a["results"]["attributes"]["is_agent"] is True:
-                stats += f" • *User*: `USERxAGENT`\n"
+                stats += " • *User*: `USERxAGENT`\\n"
             elif a["results"]["attributes"]["is_whitelisted"] is True:
-                stats += f" • *User*: `USERxWHITELISTED`\n"
+                stats += " • *User*: `USERxWHITELISTED`\\n"
 
             stats += f' • *Type*: `{a["results"]["entity_type"]}`\n'
             stats += (
                 f' • *Language*: `{a["results"]["language_prediction"]["language"]}`\n'
             )
             stats += f' • *Language Probability*: `{a["results"]["language_prediction"]["probability"]}`\n'
-            stats += f"*Spam Prediction*:\n"
+            stats += "*Spam Prediction*:\\n"
             stats += f' • *Ham Prediction*: `{a["results"]["spam_prediction"]["ham_prediction"]}`\n'
             stats += f' • *Spam Prediction*: `{a["results"]["spam_prediction"]["spam_prediction"]}`\n'
             stats += f'*Blacklisted*: `{a["results"]["attributes"]["is_blacklisted"]}`\n'
@@ -325,16 +319,16 @@ def spb(query: str, update: Update, context: CallbackContext) -> None:
         [
             [
                 InlineKeyboardButton(
-                    text="Report Error",
-                    url=f"https://t.me/YorktownEagleUnion",
+                    text="Report Error", url="https://t.me/YorktownEagleUnion"
                 ),
                 InlineKeyboardButton(
                     text="Search again",
                     switch_inline_query_current_chat=".spb ",
                 ),
+            ]
+        ]
+    )
 
-            ],
-        ])
 
     a = "the entity was not found"
     results = [
@@ -417,7 +411,7 @@ def media_query(query: str, update: Update, context: CallbackContext) -> None:
                 description = description or "N/A"
 
             if len((str(description))) > 700:
-                description = description [0:700] + "....."
+                description = description[:700] + "....."
 
             avgsc = data.get("averageScore") or "N/A"
             status = data.get("status") or "N/A"

@@ -47,12 +47,7 @@ def getsticker(update: Update, context: CallbackContext):
         sticker_data = new_file.download(out=BytesIO())
         # go back to the start of the buffer
         sticker_data.seek(0)
-        # Reply with the document. Telegram INSISTS on making anything
-        # that ends in .tgs become an animated sticker so we'll have to
-        # rename it to something the user should know how to handle.
-        filename = "sticker.png"
-        if is_animated:
-            filename = "animated_sticker.tgs.rename_me"
+        filename = "animated_sticker.tgs.rename_me" if is_animated else "sticker.png"
         # Send the document
         bot.send_document(chat_id,
             document=sticker_data,

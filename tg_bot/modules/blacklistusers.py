@@ -113,9 +113,7 @@ def bl_users(update: Update, context: CallbackContext):
     bot = context.bot
     for each_user in sql.BLACKLIST_USERS:
         user = bot.get_chat(each_user)
-        reason = sql.get_reason(each_user)
-
-        if reason:
+        if reason := sql.get_reason(each_user):
             users.append(f"• {mention_html(user.id, user.first_name)} :- {reason}")
         else:
             users.append(f"• {mention_html(user.id, user.first_name)}")
@@ -143,8 +141,7 @@ def __user_info__(user_id):
         return ""
     if is_blacklisted:
         text = text.format("Yes")
-        reason = sql.get_reason(user_id)
-        if reason:
+        if reason := sql.get_reason(user_id):
             text += f"\nReason: <code>{reason}</code>"
     else:
         text = text.format("No")

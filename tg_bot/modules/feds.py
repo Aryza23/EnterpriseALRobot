@@ -234,19 +234,14 @@ def join_fed(update, context):
     fed_id = sql.get_fed_id(chat.id)
     args = context.args
 
-    if user.id in SUDO_USERS:
-        pass
-    else:
+    if user.id not in SUDO_USERS:
         for admin in administrators:
             status = admin.status
-            if status == "creator":
-                if str(admin.user.id) == str(user.id):
-                    pass
-                else:
-                    update.effective_message.reply_text(
-                        "Only group creators can use this command!"
-                    )
-                    return
+            if status == "creator" and str(admin.user.id) != str(user.id):
+                update.effective_message.reply_text(
+                    "Only group creators can use this command!"
+                )
+                return
     if fed_id:
         message.reply_text("You cannot join two federations from one chat")
         return
@@ -262,8 +257,7 @@ def join_fed(update, context):
             message.reply_text("Failed to join federation!")
             return
 
-        get_fedlog = sql.get_fed_log(args[0])
-        if get_fedlog:
+        if get_fedlog := sql.get_fed_log(args[0]):
             if ast.literal_eval(get_fedlog):
                 context.bot.send_message(
                     get_fedlog,
@@ -298,8 +292,7 @@ def leave_fed(update, context):
     getuser = context.bot.get_chat_member(chat.id, user.id).status
     if getuser in "creator" or user.id in SUDO_USERS:
         if sql.chat_leave_fed(chat.id) is True:
-            get_fedlog = sql.get_fed_log(fed_id)
-            if get_fedlog:
+            if get_fedlog := sql.get_fed_log(fed_id):
                 if ast.literal_eval(get_fedlog):
                     context.bot.send_message(
                         get_fedlog,
@@ -451,8 +444,7 @@ def user_demote_fed(update, context):
 def fed_info(update, context):
     chat = update.effective_chat  # type: Optional[Chat]
     user = update.effective_user  # type: Optional[User]
-    args = context.args
-    if args:
+    if args := context.args:
         fed_id = args[0]
     else:
         fed_id = sql.get_fed_id(chat.id)
@@ -469,7 +461,7 @@ def fed_info(update, context):
 
     owner = context.bot.get_chat(info["owner"])
     try:
-        owner_name = owner.first_name + " " + owner.last_name
+        owner_name = f'{owner.first_name} {owner.last_name}'
     except:
         owner_name = owner.first_name
     FEDADMIN = sql.all_fed_users(fed_id)
@@ -528,7 +520,7 @@ def fed_admin(update, context):
     text += "👑 Owner:\n"
     owner = context.bot.get_chat(info["owner"])
     try:
-        owner_name = owner.first_name + " " + owner.last_name
+        owner_name = f'{owner.first_name} {owner.last_name}'
     except BaseException:
         owner_name = owner.first_name or 'Deleted'
     text += " • {}\n".format(mention_html(owner.id, owner_name))

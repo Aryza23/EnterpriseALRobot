@@ -67,8 +67,7 @@ if is_module_loaded(FILENAME):
                     ):
                         return None
 
-                    filter_result = self.filters(update)
-                    if filter_result:
+                    if filter_result := self.filters(update):
                         chat = update.effective_chat
                         user = update.effective_user
                         # disabled, admincmd, user admin
@@ -77,11 +76,7 @@ if is_module_loaded(FILENAME):
                             is_disabled = command[
                                 0
                             ] in ADMIN_CMDS and is_user_admin(update, user.id)
-                            if not is_disabled:
-                                return None
-                            else:
-                                return args, filter_result
-
+                            return None if not is_disabled else (args, filter_result)
                         return args, filter_result
                     else:
                         return False
@@ -219,8 +214,7 @@ if is_module_loaded(FILENAME):
     def commands(update, context):
         chat = update.effective_chat
         user = update.effective_user
-        conn = connected(context.bot, update, chat, user.id, need_admin=True)
-        if conn:
+        if conn := connected(context.bot, update, chat, user.id, need_admin=True):
             chat = dispatcher.bot.getChat(conn)
             chat_id = conn
         else:

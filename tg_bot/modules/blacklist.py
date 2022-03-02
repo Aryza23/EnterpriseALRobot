@@ -29,8 +29,7 @@ def blacklist(update, context):
     user = update.effective_user
     args = context.args
 
-    conn = connected(context.bot, update, chat, user.id, need_admin=False)
-    if conn:
+    if conn := connected(context.bot, update, chat, user.id, need_admin=False):
         chat_id = conn
         chat_name = dispatcher.bot.getChat(conn).title
     else:
@@ -74,8 +73,7 @@ def add_blacklist(update, context):
     user = update.effective_user
     words = msg.text.split(None, 1)
 
-    conn = connected(context.bot, update, chat, user.id)
-    if conn:
+    if conn := connected(context.bot, update, chat, user.id):
         chat_id = conn
         chat_name = dispatcher.bot.getChat(conn).title
     else:
@@ -132,8 +130,7 @@ def unblacklist(update, context):
     user = update.effective_user
     words = msg.text.split(None, 1)
 
-    conn = connected(context.bot, update, chat, user.id)
-    if conn:
+    if conn := connected(context.bot, update, chat, user.id):
         chat_id = conn
         chat_name = dispatcher.bot.getChat(conn).title
     else:
@@ -357,7 +354,7 @@ def del_blacklist(update, context):  # sourcery no-metrics
 
     chat_filters = sql.get_chat_blacklist(chat.id)
     for trigger in chat_filters:
-        pattern = r"( |^|[^\w])" + re.escape(trigger) + r"( |$|[^\w])"
+        pattern = f"( |^|[^\\w]){re.escape(trigger)}( |$|[^\\w])"
         if re.search(pattern, to_match, flags=re.IGNORECASE):
             try:
                 if getmode == 0:

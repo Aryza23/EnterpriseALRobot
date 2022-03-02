@@ -93,12 +93,10 @@ class KigyoINIT:
             return None
         else:
             try:
-                sw = spamwatch.Client(spamwatch_api)
-                return sw
+                return spamwatch.Client(spamwatch_api)
             except:
-                sw = None
                 log.warning("Can't connect to SpamWatch!")
-                return sw
+                return None
 
 
 KInit = KigyoINIT(parser=kigconfig)

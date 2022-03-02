@@ -23,12 +23,11 @@ def paste(update: Update, context: CallbackContext):
     else:
         message.reply_text("What am I supposed to do with this?")
         return
-    
+
     txt = ""
-    paste_url = upload_text(data)
-    if not paste_url:
-        txt = "Failed to paste data"
-    else:
+    if paste_url := upload_text(data):
         txt = "Successfully uploaded to Privatebin: {}".format(paste_url)
 
+    else:
+        txt = "Failed to paste data"
     message.reply_text(txt, disable_web_page_preview=True)

@@ -14,7 +14,7 @@ from tg_bot.modules.helper_funcs.decorators import kigcmd
 def shorten(description, info="anilist.co"):
     msg = ""
     if len(description) > 700:
-        description = description[0:500] + "...."
+        description = description[:500] + "...."
         msg += f"\n*Description*: _{description}_[Read More]({info})"
     else:
         msg += f"\n*Description*:_{description}_"
@@ -35,12 +35,13 @@ def t(milliseconds: int) -> str:
     hours, minutes = divmod(minutes, 60)
     days, hours = divmod(hours, 24)
     tmp = (
-        ((str(days) + " Days, ") if days else "")
-        + ((str(hours) + " Hours, ") if hours else "")
-        + ((str(minutes) + " Minutes, ") if minutes else "")
-        + ((str(seconds) + " Seconds, ") if seconds else "")
-        + ((str(milliseconds) + " ms, ") if milliseconds else "")
+        (f'{str(days)} Days, ' if days else "")
+        + (f'{str(hours)} Hours, ' if hours else "")
+        + (f'{str(minutes)} Minutes, ' if minutes else "")
+        + (f'{str(seconds)} Seconds, ' if seconds else "")
+        + (f'{str(milliseconds)} ms, ' if milliseconds else "")
     )
+
     return tmp[:-2]
 
 
@@ -212,7 +213,7 @@ def anime(update: Update, context: CallbackContext):  # sourcery no-metrics
             trailer_id = trailer.get("id", None)
             site = trailer.get("site", None)
             if site == "youtube":
-                trailer = "https://youtu.be/" + trailer_id
+                trailer = f"https://youtu.be/{trailer_id}"
         description = (
             json.get("description", "N/A")
             .replace("<i>", "")
@@ -273,8 +274,7 @@ def character(update: Update, context: CallbackContext):
         description = f"{json['description']}"
         site_url = json.get("siteUrl")
         msg += shorten(description, site_url)
-        image = json.get("image", None)
-        if image:
+        if image := json.get("image", None):
             image = image.get("large")
             update.effective_message.reply_photo(
                 photo=image,
